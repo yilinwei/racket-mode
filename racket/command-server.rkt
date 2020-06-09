@@ -19,6 +19,7 @@
                                type)]
  ["commands/find-module.rkt"  (find-module)]
  ["commands/help.rkt"         (doc)]
+ ["commands/lexindent.rkt"    (lexindent)]
  ["commands/macro.rkt"        (macro-stepper macro-stepper/next)]
  ["commands/profile.rkt"      (get-profile)]
  ["commands/requires.rkt"     (requires/tidy requires/trim requires/base)]
@@ -137,6 +138,7 @@
     [`(requires/tidy ,reqs)            (requires/tidy reqs)]
     [`(requires/trim ,path-str ,reqs)  (requires/trim path-str reqs)]
     [`(requires/base ,path-str ,reqs)  (requires/base path-str reqs)]
+    [`(lexindent . ,more)              (apply lexindent more)]
 
     ;; Commands that MIGHT need a REPL session for context (e.g. its
     ;; namespace), if their first "how" argument is 'namespace.
