@@ -28,6 +28,11 @@
 (declare-function  racket--logger-on-notify "racket-logger" (str))
 (autoload         'racket--logger-on-notify "racket-logger")
 
+(defvar racket--cmd-nonce->callback (make-hash-table :test 'eq)
+  "A hash from nonce to callback function.")
+(defvar racket--cmd-nonce 0
+  "Number that increments for each command request we send.")
+
 ;;;###autoload
 (defun racket-start-back-end ()
   "Start the back end process used by Racket Mode.
@@ -90,7 +95,12 @@ See issue #327.")
 
 (defun racket--cmd-close ()
   (pcase (get-process racket--cmd-process-name)
-    ((and (pred (processp)) proc) (delete-process proc))))
+    ((and (pred (processp)) proc)
+     (delete-process proc)
+     (clrhash racket--cmd-nonce->callback)))
+  (pcase (get-buffer (concat " *" racket--cmd-process-name "*"))
+    ((and (pred (bufferp)) buf)
+     (kill-buffer buf))))
 
 (defun racket--call-when-connected-to-command-server (func)
   "Call FUNC, starting the back end process if necessary."
@@ -154,11 +164,6 @@ messages."
         (set-marker (process-mark proc) (point))))
     (when racket--display-stderr-p
       (display-buffer (process-buffer proc)))))
-
-(defvar racket--cmd-nonce->callback (make-hash-table :test 'eq)
-  "A hash from nonce to callback function.")
-(defvar racket--cmd-nonce 0
-  "Number that increments for each command request we send.")
 
 (defun racket--cmd-dispatch-response (response)
   "Do something with a sexpr sent to us from the command server.
