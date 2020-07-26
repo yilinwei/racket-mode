@@ -19,7 +19,7 @@
                                type)]
  ["commands/find-module.rkt"  (find-module)]
  ["commands/help.rkt"         (doc)]
- ["commands/lexindent.rkt"    (lexindent)]
+ ["commands/lexindent-shim.rkt" (lexindent)]
  ["commands/macro.rkt"        (macro-stepper macro-stepper/next)]
  ["commands/profile.rkt"      (get-profile)]
  ["commands/requires.rkt"     (requires/tidy requires/trim requires/base)]
